@@ -1,17 +1,17 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HeaderButton, Text } from '@react-navigation/elements';
+import { Background, HeaderButton, Text } from '@react-navigation/elements';
 import {
   createStaticNavigation,
   StaticParamList,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image } from 'react-native';
-import bell from '../assets/bell.png';
+import heart from '../assets/heart.png';
 import newspaper from '../assets/newspaper.png';
 import { Home } from './screens/Home';
 import { Profile } from './screens/Profile';
 import { Settings } from './screens/Settings';
-import { Updates } from './screens/Updates';
+import { Keep } from './screens/Keep';
 import { NotFound } from './screens/NotFound';
 
 const HomeTabs = createBottomTabNavigator({
@@ -19,35 +19,67 @@ const HomeTabs = createBottomTabNavigator({
     Home: {
       screen: Home,
       options: {
-        title: 'Feed',
-        tabBarIcon: ({ color, size }) => (
+        headerStyle: {
+          backgroundColor: '#FF8000',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        title: '首頁',
+        tabBarIcon: ({ focused, color, size }) => (
           <Image
             source={newspaper}
-            tintColor={color}
+            tintColor={focused ? '#FF8000' : '#gray'}
             style={{
               width: size,
-              height: size,
+              height: size
             }}
           />
         ),
+        tabBarLabel: ({ focused }) => (
+          <Text style={{ 
+            color: focused ? '#FF8000' : '#gray',
+            fontSize: 10,
+           }}>列表</Text>
+        ), // 文字的顏色
       },
     },
-    Updates: {
-      screen: Updates,
+    Keep: {
+      screen: Keep,
       options: {
-        tabBarIcon: ({ color, size }) => (
+        headerStyle: {
+          backgroundColor: '#FF8000',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        title: '我的收藏',
+        tabBarIcon: ({ focused, color, size }) => (
           <Image
-            source={bell}
-            tintColor={color}
+            source={heart}
+            tintColor={focused ? '#FF8000' : 'gray'}
             style={{
               width: size,
               height: size,
             }}
           />
         ),
+        tabBarLabel: ({ focused }) => (
+          <Text style={{ 
+            color: focused ? '#FF8000' : '#gray',
+            fontSize: 10,
+           }}>收藏</Text>
+        ), // 文字的顏色
       },
     },
   },
+  // screenOptions: {
+  //   tabBarStyle: {
+  //     backgroundColor: '#f4511e', // 設定底部標籤欄的背景色
+  //   },
+  // },
 });
 
 const RootStack = createNativeStackNavigator({

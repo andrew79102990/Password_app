@@ -1,10 +1,10 @@
 import { Text } from '@react-navigation/elements';
 import { StyleSheet, View } from 'react-native';
 
-export function Updates() {
+export function Keep() {
   return (
     <View style={styles.container}>
-      <Text>Updates Screen</Text>
+      <Text>Keep Screen</Text>
     </View>
   );
 }
