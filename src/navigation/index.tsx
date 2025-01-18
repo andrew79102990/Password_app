@@ -87,11 +87,21 @@ const RootStack = createNativeStackNavigator({
     HomeTabs: {
       screen: HomeTabs,
       options: {
-        title: 'Home',
+        title: '返回',
         headerShown: false,
       },
     },
     Profile: {
+      options:{
+        headerStyle: {
+          backgroundColor: '#FF8000',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        title: '景點介紹',
+      },
       screen: Profile,
       linking: {
         path: ':user(@[a-zA-Z0-9-_]+)',
