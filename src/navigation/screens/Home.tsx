@@ -3,13 +3,6 @@ import { useNavigation } from '@react-navigation/native'; // 引入 useNavigatio
 import { StyleSheet, View, FlatList, TouchableOpacity, Text, Image } from 'react-native'; // 引入 React Native 的組件，用來構建 UI
 import { Ionicons } from '@expo/vector-icons'; // 需要安裝 @expo/vector-icons，用來使用圖標
 
-// 定義一個包含靜態數據的陣列，用來顯示在列表中
-const json_data = [
-  { ID: '1', City: "宜蘭縣", Town: '冬山鄉', Address: "中山村新寮二路161巷88號", PicURL: 'https://ezgo.ardswc.gov.tw/_api/content/images/agrispots/25819/480x360_agrispots-image--i0uqxsgseicmbf12-ztpa.jpg' },
-  { ID: '2', City: "臺北市", Town: '士林區', Address: "平等里平菁街43巷99號", PicURL: 'https://ezgo.ardswc.gov.tw/_api/content/images/agrispots/25120/480x360_agrispots-image-khbonm2dh0udqkznzbk59a.png' },
-  { ID: '3', City: "屏東縣", Town: '竹田鄉', Address: "鳳明村福安路120巷101號", PicURL: 'https://ezgo.ardswc.gov.tw/_api/content/images/agrispots/4317/480x360_IMG_8716.jpg' },
-];
-
 // 定義 Home 組件
 export function Home() {
   // 使用 useState 管理 dataSource 狀態，初始值為空陣列
@@ -19,8 +12,26 @@ export function Home() {
 
   useEffect(() => {
     // 使用 useEffect 在組件掛載時設置 dataSource 狀態為 json_data
-    setDataSource(json_data);
+    fetchData();
   }, []); // 空陣列作為依賴，確保只在組件第一次渲染時執行
+
+
+//=======API請求的程式邏輯=======//
+
+const fetchData = () => {
+    const url = 'https://data.moa.gov.tw/Service/OpenData/ODwsv/ODwsvTravelFood.aspx?IsTransData=1&UnitId=193'
+
+    fetch(url)
+        .then((response)=>response.json())
+        .then((responseData)=>{
+          setDataSource(responseData);
+        })
+        .catch((err)=>{
+            console.log("error是： ",err)
+        })
+}
+//=======API程式邏輯結束=======//
+
 
   // 定義 showNoticDetail 函數，負責導航到 Profile 頁面，並傳遞選中的案件數據
   const showNoticDetail = (cases) => {
