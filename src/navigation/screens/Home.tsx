@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'; // 引入 React 和其 useSt
 import { useNavigation } from '@react-navigation/native'; // 引入 useNavigation，用於在應用程式中進行導航
 import { StyleSheet, View, FlatList, TouchableOpacity, Text, Image } from 'react-native'; // 引入 React Native 的組件，用來構建 UI
 import { Ionicons } from '@expo/vector-icons'; // 需要安裝 @expo/vector-icons，用來使用圖標
-
+import * as StorageHelper from '../helpers/StorageHelper';
 // 定義 Home 組件
 export function Home() {
   // 使用 useState 管理 dataSource 狀態，初始值為空陣列
@@ -15,7 +15,26 @@ export function Home() {
     fetchData();
   }, []); // 空陣列作為依賴，確保只在組件第一次渲染時執行
 
+  useEffect(() => {
+      let getAll = []
 
+      dataSource.map(a => {
+          if (a.addToMyList === true) {
+              getAll.push(a)
+          }
+      })
+
+      saveToStorage(getAll)
+  })
+
+  const saveToStorage = async (getMyBooks) => {
+      try {
+          await StorageHelper.setMySetting('myList', JSON.stringify(getMyBooks))
+      } catch (err) {
+          console.log(err)
+      }
+
+  }
 //=======API請求的程式邏輯=======//
 
 const fetchData = () => {
@@ -38,18 +57,41 @@ const fetchData = () => {
     navigation.push('Profile', { passProps: cases }); // 使用 navigation.push 進行導航
   };
 
-  // 定義 toggleFavorite 函數，負責切換項目的喜愛狀態
-  const toggleFavorite = (id) => {
-    // 使用 setFavoriteIds 函數來更新 favoriteIds 狀態
-    setFavoriteIds((prev) => 
-      // 檢查 prev（之前的 favoriteIds 狀態）中是否包含當前的 id
-      prev.includes(id) 
-        // 如果包含（表示該項目已被標記為喜愛），則過濾掉該 id
-        ? prev.filter((favId) => favId !== id) 
-        // 如果不包含，則將該 id 添加到新的喜愛列表中
-        : [...prev, id] 
+  // // 定義 toggleFavorite 函數，負責切換項目的喜愛狀態
+  // const toggleFavorite = (id) => {
+  //   // 使用 setFavoriteIds 函數來更新 favoriteIds 狀態
+  //   setFavoriteIds((prev) => 
+  //     // 檢查 prev（之前的 favoriteIds 狀態）中是否包含當前的 id
+  //     prev.includes(id) 
+  //       // 如果包含（表示該項目已被標記為喜愛），則過濾掉該 id
+  //       ? prev.filter((favId) => favId !== id) 
+  //       // 如果不包含，則將該 id 添加到新的喜愛列表中
+  //       : [...prev, id] 
+  //   );
+  // };
+
+  const toggleFavorite = (cases) => {
+
+    const newDatas = dataSource.map(a => {
+        let copyA = { ...a }
+        if (copyA.ID === cases.ID) {
+            copyA.addToMyList = !copyA.addToMyList
+        }
+
+        return copyA
+    }
+
+    )
+
+    setDataSource(newDatas)
+    // 更新收藏愛心icon的 favoriteIds 狀態與圖樣
+    setFavoriteIds(prev => 
+      prev.includes(cases.ID) 
+        ? prev.filter((favId) => favId !== cases.ID) 
+        : [...prev, cases.ID]
     );
-  };
+
+}
 
 
   // 定義 renderList 函數，負責渲染每個列表項
@@ -75,7 +117,7 @@ const fetchData = () => {
               {cases.Address}  {/*顯示地址*/}
           </Text>
         </View>
-        <TouchableOpacity onPress={() => toggleFavorite(cases.ID)} style={styles.heartIcon}> {/* 點擊愛心圖標切換喜愛狀態 */}
+        <TouchableOpacity onPress={() => toggleFavorite(cases)} style={styles.heartIcon}> {/* 點擊愛心圖標切換喜愛狀態 */}
           <Ionicons 
             name={isFavorite ? 'heart' : 'heart-outline'} // 根據喜愛狀態顯示實心或空心愛心圖標
             size={24} 
